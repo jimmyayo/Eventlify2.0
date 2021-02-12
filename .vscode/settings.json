@@ -1,0 +1,10 @@
+{
+   "auto-rename-tag.activationOnLanguage": [
+
+      "*"
+   ],
+   
+      "msbuild": {
+          "useBundledOnly": true
+      }
+}
