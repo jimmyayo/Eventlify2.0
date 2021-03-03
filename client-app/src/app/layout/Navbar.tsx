@@ -12,6 +12,7 @@ export default function NavBar() {
                Eventlify
             </Menu.Item>
             <Menu.Item name='Events' as={NavLink} to='/activities' />
+            <Menu.Item name='Errors' as={NavLink} to='/errors' />
             <Menu.Item>
                <Button positive content='Create Event' as={NavLink} to='/createActivity' />
             </Menu.Item>
