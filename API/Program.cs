@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Microsoft.AspNetCore.Identity;
+using Domain;
 
 namespace API
 {
@@ -25,7 +27,8 @@ namespace API
             {
                 var context = services.GetRequiredService<DataContext>(); // Service locator
                 await context.Database.MigrateAsync();
-                await Seed.SeedData(context);
+                var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                await Seed.SeedData(context, userManager);
             }
             catch (Exception ex)
             {
