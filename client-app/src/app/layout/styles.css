@@ -14,6 +14,9 @@ body {
   
 }
 
+.react-datepicker-wrapper {
+  width: 100%;
+}
 /*home page styles*/
 
 .masthead {
@@ -42,5 +45,6 @@ body {
   font-size: 1.7em;
   font-weight: normal;
 }
+
 
 /*end home page styles*/

@@ -11,6 +11,8 @@ import MyTextInput from '../../../app/common/form/MyTextInput';
 import MyTextArea from '../../../app/common/form/MyTextArea';
 import MySelectInput from '../../../app/common/form/MySelectInput';
 import { CategoryOptions } from '../../../app/common/options/categoryOptions';
+import MyDateInput from '../../../app/common/form/MyDateInput';
+import { Activity } from '../../../app/models/activity';
 
 export default observer(function ActivityForm() {
 
@@ -18,12 +20,12 @@ export default observer(function ActivityForm() {
    const { createActivity, updateActivity, loadActivity, loading, loadingInitial } = activityStore;
    const { id } = useParams<{ id: string }>();
    const history = useHistory();
-   const [activity, setActivity] = useState({
+   const [activity, setActivity] = useState<Activity>({
       id: '',
       title: '',
       description: '',
       category: '',
-      date: '',
+      date: null,
       city: '',
       venue: ''
    });
@@ -57,7 +59,12 @@ export default observer(function ActivityForm() {
                   <MyTextInput name='title' placeholder='Title' />
                   <MyTextArea rows={3} placeholder='Description' name='description' />
                   <MySelectInput options={CategoryOptions} placeholder='Category' name='category' />
-                  <MyTextInput placeholder='Date' name='date' />
+                  <MyDateInput
+                     placeholderText='Date' 
+                     name='date'
+                     showTimeSelect
+                     timeCaption='time'
+                     dateFormat='MMMM d, yyyy h:mm aa' />
                   <MyTextInput placeholder='City' name='city' />
                   <MyTextInput placeholder='Venue' name='venue' />
                   <Button as={Link} to='/activities' floated='right' type='cancel' color='grey' content='Cancel' />
