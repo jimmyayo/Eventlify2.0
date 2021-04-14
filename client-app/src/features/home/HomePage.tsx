@@ -11,7 +11,7 @@ export default function HomePage() {
                Eventlify
             </Header>
             <Header as='h2' inverted content='Welcome to Eventlify' />
-            <Button as={Link} to='/activities' size='huge' inverted>Take me to Events!</Button>
+            <Button as={Link} to='/login' size='huge' inverted>Login</Button>
          </Container>
       </Segment>
    )
