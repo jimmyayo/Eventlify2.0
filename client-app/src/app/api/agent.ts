@@ -1,6 +1,6 @@
 import { store } from './../stores/stores';
 import { history } from './../../index';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { Activity } from '../models/activity';
 import { User, UserFormValues } from '../models/user';
@@ -12,6 +12,14 @@ const sleep = (delay: number) => {
       setTimeout(resolve, delay)
    })
 }
+
+axios.interceptors.request.use(config => {
+   const token = store.commonStore.token;
+   if (token) config.headers.Authorization = `Bearer ${token}`;
+
+   return config;
+})
+
 
 axios.interceptors.response.use(async response => {
    await sleep(1000);
