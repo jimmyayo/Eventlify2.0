@@ -6,6 +6,7 @@ import { Button, Header, Label } from 'semantic-ui-react'
 import MyTextInput from '../../app/common/form/MyTextInput'
 import { useStore } from '../../app/stores/stores'
 import * as Yup from 'yup';
+import ValidationErrors from '../errors/ValidationErrors'
 
 export default observer(function RegisterForm() {
   const { userStore } = useStore()
@@ -15,7 +16,7 @@ export default observer(function RegisterForm() {
       onSubmit={(values, { setErrors }) =>
         userStore
           .register(values)
-          .catch((error) => setErrors({ error: 'Invalid email or password.' }))
+          .catch((error) => setErrors({ error }))
       }
       validationSchema={Yup.object({
           displayName: Yup.string().required(),
@@ -25,7 +26,7 @@ export default observer(function RegisterForm() {
       })}
     >
       {({ handleSubmit, isSubmitting, errors, isValid, dirty }) => (
-        <Form className="ui form" onSubmit={handleSubmit}>
+        <Form className="ui form error" onSubmit={handleSubmit}>
           <Header as='h2' content='Sign up for Eventlify' color='teal' textAlign='center' />
           <MyTextInput name="displayName" placeholder="Display Name" />
           <MyTextInput name="username" placeholder="Username" />
@@ -34,12 +35,7 @@ export default observer(function RegisterForm() {
           <ErrorMessage
             name="error"
             render={() => (
-              <Label
-                style={{ marginBottom: '10px' }}
-                basic
-                color="red"
-                content={errors.error}
-              />
+              <ValidationErrors errors={errors.error} />
             )}
           />
           <Button positive content="Register" type="submit" fluid disabled={!isValid || !dirty || isSubmitting} />
