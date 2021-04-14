@@ -1,27 +1,40 @@
-import { Form, Formik } from 'formik';
-import { observer } from 'mobx-react-lite';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
-import MyTextInput from '../../app/common/form/MyTextInput';
-import { useStore } from '../../app/stores/stores';
+import { ErrorMessage, Form, Formik } from 'formik'
+import { observer } from 'mobx-react-lite'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Button, Label } from 'semantic-ui-react'
+import MyTextInput from '../../app/common/form/MyTextInput'
+import { useStore } from '../../app/stores/stores'
 
-
-export default observer (function LoginForm() {
-    const {userStore} = useStore();
-    return (
-        <Formik
-            initialValues={{email:'', password:''}}
-            onSubmit={(values) => userStore.login(values) }
-        >
-            {({handleSubmit, isSubmitting}) => (
-                <Form className='ui form' onSubmit={handleSubmit}>
-                    <MyTextInput name='email' placeholder='email' />
-                    <MyTextInput name='password' placeholder='password' type='password' />
-                    <Button positive content='Login' type='submit' fluid />
-                </Form>
+export default observer(function LoginForm() {
+  const { userStore } = useStore()
+  return (
+    <Formik
+      initialValues={{ email: '', password: '', error: null }}
+      onSubmit={(values, { setErrors }) =>
+        userStore
+          .login(values)
+          .catch((error) => setErrors({ error: 'Invalid email or password.' }))
+      }
+    >
+      {({ handleSubmit, isSubmitting, errors }) => (
+        <Form className="ui form" onSubmit={handleSubmit}>
+          <MyTextInput name="email" placeholder="email" />
+          <MyTextInput name="password" placeholder="password" type="password" />
+          <ErrorMessage
+            name="error"
+            render={() => (
+              <Label
+                style={{ marginBottom: '10px' }}
+                basic
+                color="red"
+                content={errors.error}
+              />
             )}
-
-        </Formik>
-    )
+          />
+          <Button positive content="Login" type="submit" fluid />
+        </Form>
+      )}
+    </Formik>
+  )
 })
