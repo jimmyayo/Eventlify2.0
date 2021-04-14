@@ -3,6 +3,7 @@ import { history } from './../../index';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { Activity } from '../models/activity';
+import { User, UserFormValues } from '../models/user';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -13,7 +14,6 @@ const sleep = (delay: number) => {
 }
 
 axios.interceptors.response.use(async response => {
-
    await sleep(1000);
    return response;
 
@@ -75,8 +75,15 @@ const Activities = {
    delete: (id: string) => requests.del(`/activities/${id}`)
 }
 
+const Account = {
+   current: () => requests.get<User>('/account'),
+   login: (user: UserFormValues) => requests.post<User>('/account/login', user),
+   register: (user: UserFormValues) => requests.post<User>('account/register', user)
+}
+
 const agent = {
-   Activities
+   Activities,
+   Account
 }
 
 export default agent;
