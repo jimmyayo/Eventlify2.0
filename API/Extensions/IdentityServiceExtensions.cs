@@ -29,7 +29,7 @@ namespace API.Extensions
             var key =
                 new SymmetricSecurityKey(Encoding
                         .UTF8
-                        .GetBytes("super secret key"));
+                        .GetBytes(config["TokenKey"]));
 
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
