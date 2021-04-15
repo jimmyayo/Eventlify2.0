@@ -7,6 +7,7 @@ using Persistence;
 using Microsoft.EntityFrameworkCore;
 using Application.Core;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Application.Activities
 {
@@ -28,13 +29,10 @@ namespace Application.Activities
             {
                
                 var activities = await _context.Activities
-                   .Include(a => a.Attendees)
-                   .ThenInclude(u => u.Attendee)
+                   .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
                    .ToListAsync(cancellationToken);
                 
-                var activitiesToReturn = _mapper.Map<List<ActivityDto>>(activities);
-
-                return Result<List<ActivityDto>>.Success(activitiesToReturn);
+                return Result<List<ActivityDto>>.Success(activities);
             }
         }
     }
