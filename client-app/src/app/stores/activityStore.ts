@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Activity } from "../models/activity";
+import { store } from "./stores";
 
 export default class ActivityStore {
    activities: Activity[] = [];
@@ -34,7 +35,7 @@ export default class ActivityStore {
          const activities = await agent.Activities.list();
 
          activities.forEach(activity => {
-            this.setActivityDate(activity);
+            this.setActivityProperties(activity);
          });
          this.setLoadingInitial(false);
 
@@ -53,7 +54,7 @@ export default class ActivityStore {
          this.loadingInitial = true;
          try {
             activity = await agent.Activities.details(id);
-            this.setActivityDate(activity);
+            this.setActivityProperties(activity);
             runInAction(() => this.selectedActivity = activity);
             this.setLoadingInitial(false);
             return activity;
@@ -64,8 +65,14 @@ export default class ActivityStore {
       }
    }
 
-   private setActivityDate = (activity: Activity) => {
+   private setActivityProperties = (activity: Activity) => {
       activity.date = new Date(activity.date!);
+      const user = store.userStore.user;
+      if (user) {
+         activity.isGoing = activity.attendees!.some(a => a.username === user.username);
+         activity.isHost = activity.hostUsername === user.username;
+         activity.host = activity.attendees?.find( a => a.username === activity.hostUsername);
+      }
       this.activityRegistry.set(activity.id, activity);
    }
 

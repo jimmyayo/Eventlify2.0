@@ -31,8 +31,24 @@ export default function ActivityListItem({ activity }: Props) {
                         {activity.title}
                      </Item.Header>
                      <Item.Description>
-                        Hosted by Bobby Brown
+
+                        Hosted by {activity.host?.displayName}
                      </Item.Description>
+                     {activity.isHost && (
+                        <Item.Description>
+                           <Label basic color='orange'>
+                           You are hosting this event
+                           </Label>
+                           
+                        </Item.Description>
+                     )}
+                     {activity.isGoing && !activity.isHost && (
+                        <Item.Description>
+                           <Label basic color='green'>
+                           You are attending this event
+                           </Label>
+                        </Item.Description>
+                     )}
                   </Item.Content>
                </Item>
             </Item.Group>
