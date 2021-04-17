@@ -12,7 +12,7 @@ import MyTextArea from '../../../app/common/form/MyTextArea'
 import MySelectInput from '../../../app/common/form/MySelectInput'
 import { CategoryOptions } from '../../../app/common/options/categoryOptions'
 import MyDateInput from '../../../app/common/form/MyDateInput'
-import { Activity } from '../../../app/models/activity'
+import { Activity, ActivityFormValues } from '../../../app/models/activity'
 
 export default observer(function ActivityForm() {
   const { activityStore } = useStore()
@@ -25,18 +25,10 @@ export default observer(function ActivityForm() {
   } = activityStore
   const { id } = useParams<{ id: string }>()
   const history = useHistory()
-  const [activity, setActivity] = useState<Activity>({
-    id: '',
-    title: '',
-    description: '',
-    category: '',
-    date: null,
-    city: '',
-    venue: '',
-  })
+  const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
 
   useEffect(() => {
-    if (id) loadActivity(id).then((activity) => setActivity(activity!))
+    if (id) loadActivity(id).then((activity) => setActivity(new ActivityFormValues(activity)))
   }, [id, loadActivity])
 
   const validationSchema = Yup.object({
@@ -48,8 +40,8 @@ export default observer(function ActivityForm() {
     venue: Yup.string().required(),
   })
 
-  function handleFormSubmit(activity: Activity) {
-    if (activity.id.length === 0) {
+  function handleFormSubmit(activity: ActivityFormValues) {
+    if (!activity.id) {
       // creating
       let newActivity = {
         ...activity,
@@ -107,7 +99,7 @@ export default observer(function ActivityForm() {
             />
             <Button
               disabled={isSubmitting || !dirty || !isValid}
-              loading={loading}
+              loading={isSubmitting}
               floated="right"
               type="submit"
               positive

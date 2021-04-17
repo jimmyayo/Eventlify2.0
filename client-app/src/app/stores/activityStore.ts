@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
-import { Activity } from "../models/activity";
+import { Activity, ActivityFormValues } from "../models/activity";
 import { Profile } from "../models/profile";
 import { store } from "./stores";
 import UserStore from "./userStore";
@@ -85,38 +85,35 @@ export default class ActivityStore {
    setLoadingInitial = (state: boolean) => {
       this.loadingInitial = state;
    }
-   createActivity = async (activity: Activity) => {
-      this.loading = true;
+   createActivity = async (activity: ActivityFormValues) => {
+      const user = store.userStore.user;
+      const attendee= new Profile(user!);
+
       try {
          await agent.Activities.create(activity);
+         const newActivity = new Activity(activity);
+         newActivity.hostUsername = user!.username;
+         newActivity.attendees = [attendee];
+         this.setActivityProperties(newActivity);
          runInAction(() => {
-            this.activityRegistry.set(activity.id, activity);
-            this.selectedActivity = activity;
-            this.editMode = false;
-            this.loading = false;
+            this.selectedActivity = newActivity;
          })
       } catch (error) {
-         runInAction(() => {
-            this.editMode = false;
-            this.loading = false;
-         })
+         console.log(error);
       }
    }
-   updateActivity = async (activity: Activity) => {
-      this.loading = true;
+   updateActivity = async (activity: ActivityFormValues) => {
       try {
          await agent.Activities.update(activity);
          runInAction(() => {
-            this.activityRegistry.set(activity.id, activity);
-             this.selectedActivity = activity;
-             this.editMode = false;
-             this.loading = false;
+            if (activity.id) {
+               let updatedActivity = {...this.getActivity(activity.id), ...activity};
+               this.activityRegistry.set(activity.id, updatedActivity as Activity);
+               this.selectedActivity = updatedActivity as Activity;
+            }
          })
       } catch (error) {
-         runInAction(() => {
-            this.editMode = false;
-            this.loading = false;
-         })
+         console.log(error);
       }
    }
    deleteActivity = async (id: string) => {
