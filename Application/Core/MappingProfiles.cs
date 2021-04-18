@@ -19,10 +19,12 @@ namespace Application.Core
                            .Attendee
                            .UserName));
                            
-            CreateMap<ActivityAttendee, Profiles.Profile>()
+            CreateMap<ActivityAttendee, AttendeeDto>()
                .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.Attendee.DisplayName))
                .ForMember(d => d.Username, o => o.MapFrom(s => s.Attendee.UserName))
-               .ForMember(d => d.Bio, o => o.MapFrom(s => s.Attendee.Bio));
+               .ForMember(d => d.Bio, o => o.MapFrom(s => s.Attendee.Bio))
+               .ForMember(d => d.Image, o => o.MapFrom(s => s.Attendee.Photos.FirstOrDefault(x => x.IsMain).Url));
+
 
             CreateMap<AppUser, Profiles.Profile>()
                 .ForMember(d => d.Image, o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url));
