@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Container } from 'semantic-ui-react';
 import NavBar from './Navbar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
@@ -15,6 +15,7 @@ import LoginForm from '../../features/users/LoginForm';
 import { useStore } from '../stores/stores';
 import LoadingComponent from './LoadingComponent';
 import ModalContainer from '../common/modals/ModalContainer';
+import ProfilePage from '../../features/profiles/ProfilePage';
 
 function App() {
 
@@ -48,6 +49,7 @@ function App() {
                 <Route path='/activities' component={ActivityDashboard} exact />
                 <Route path='/activities/:id' component={ActivityDetails} />
                 <Route key={location.key} path={['/createActivity', '/manage/:id']} component={ActivityForm} />
+                <Route paht='/profiles/:username' component={ProfilePage} />
                 <Route path='/errors' component={TestErrors} />
                 <Route path='/server-error' component={ServerError} />
                 <Route path='/login' component={LoginForm} />
