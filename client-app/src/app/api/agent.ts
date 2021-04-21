@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { Activity, ActivityFormValues } from '../models/activity';
 import { User, UserFormValues } from '../models/user';
-import { Profile } from '../models/profile';
+import { Photo, Profile } from '../models/profile';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -96,6 +96,13 @@ const Profiles = {
       const result = requests.get<Profile>(`/profiles/${username}`);
       //console.log(result);
       return result;
+   },
+   uploadPhoto: (file: Blob) => {
+      let formData = new FormData();
+      formData.append('File', file);
+      return axios.post<Photo>('photos', formData, {
+         headers: {'Content-type': 'multipart/form-data'}
+      })
    }
 }
 
