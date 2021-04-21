@@ -49,7 +49,7 @@ function App() {
                 <Route path='/activities' component={ActivityDashboard} exact />
                 <Route path='/activities/:id' component={ActivityDetails} />
                 <Route key={location.key} path={['/createActivity', '/manage/:id']} component={ActivityForm} />
-                <Route paht='/profiles/:username' component={ProfilePage} />
+                <Route path='/profiles/:username' component={ProfilePage} />
                 <Route path='/errors' component={TestErrors} />
                 <Route path='/server-error' component={ServerError} />
                 <Route path='/login' component={LoginForm} />
