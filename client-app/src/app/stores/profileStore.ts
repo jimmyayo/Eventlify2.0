@@ -58,6 +58,7 @@ export default class ProfileStore {
 
     setMainPhoto = async (photo: Photo) => {
         this.loading = true;
+        console.log('loading = ' + this.loading);
         try {
             agent.Profiles.setMainPhoto(photo.id);
             store.userStore.setImage(photo.url);
@@ -68,6 +69,8 @@ export default class ProfileStore {
                     this.profile.image = photo.url;
                 }
                 this.loading = false;
+                console.log('loading = ' + this.loading);
+
             })
         } catch (error) {
             console.log(error);
