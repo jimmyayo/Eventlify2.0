@@ -1,3 +1,4 @@
+import { Profile } from "app/models/profile";
 import { makeAutoObservable, runInAction } from "mobx";
 import { history } from "../..";
 import agent from "../api/agent";
@@ -42,6 +43,10 @@ export default class UserStore {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    setDisplayName = (name: string) => {
+        if (this.user) this.user.displayName = name;
     }
 
     register = async (creds: UserFormValues) => {

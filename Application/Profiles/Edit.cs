@@ -14,7 +14,16 @@ namespace Application.Profiles
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Profile profile { get; set; }
+            public string DisplayName { get; set; }
+            public string Bio { get; set; }
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.DisplayName).NotEmpty();
+            }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -27,7 +36,7 @@ namespace Application.Profiles
                 this._context = context;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command command, CancellationToken cancellationToken)
             {
                 // get current user
                 var user = await _context.Users
@@ -35,41 +44,31 @@ namespace Application.Profiles
                 
                 if (user == null) return null;
 
-                if (String.IsNullOrWhiteSpace(request.profile.DisplayName))
-                    return Result<Unit>.Failure("Display name cannot be empty.");
+                // if (String.IsNullOrWhiteSpace(command.DisplayName))
+                //     return Result<Unit>.Failure("Display name cannot be empty.");
 
                 // is username taken?
-                var profile = await _context.Users.FirstOrDefaultAsync(
-                    p => p.Id != user.Id && p.DisplayName == request.profile.DisplayName
-                );
+                if (await _context.Users.FirstOrDefaultAsync(
+                    p => p.Id != user.Id && p.DisplayName == command.DisplayName
+                ) != null) {
+                    return Result<Unit>.Failure("Display name already taken.");
+                }
 
-                if (profile != null) return Result<Unit>.Failure("Display name already taken.");
-
-                user.Bio = request.profile.Bio;
-                user.DisplayName = request.profile.DisplayName;
+                user.Bio = command.Bio ?? user.Bio;
+                user.DisplayName = command.DisplayName ?? user.DisplayName;
 
                 // this will mark the entity as "dirty" and force EF to save changes to DB
                 _context.Users.Update(user);
 
-                var result = await _context.SaveChangesAsync(true) > 0;
+                var success = await _context.SaveChangesAsync(true) > 0;
 
-                if (result) 
-                {
+                if (success) 
                     return Result<Unit>.Success(Unit.Value);
-                } else {
+                
                     return Result<Unit>.Failure("Problem saving profile.");
-                }
-
             }
         }
 
-        public class CommandValidator : AbstractValidator<Command>
-        {
-            public CommandValidator()
-            {
-                RuleFor(x => x.profile.DisplayName).NotEmpty();
-            }
-        }
 
 
     }

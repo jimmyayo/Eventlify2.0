@@ -97,6 +97,7 @@ const Profiles = {
       //console.log(result);
       return result;
    },
+   update: (profile: Partial<Profile>) => requests.put('/profiles', profile),
    uploadPhoto: (file: Blob) => {
       let formData = new FormData();
       formData.append('File', file);

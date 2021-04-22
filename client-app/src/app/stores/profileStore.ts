@@ -35,6 +35,23 @@ export default class ProfileStore {
         }
     }
 
+    updateProfile = async (updatedProfile: Partial<Profile> ) => {
+        this.loading = true;
+        try {
+            await agent.Profiles.update(updatedProfile);
+            runInAction(() => {
+                if (updatedProfile.displayName && store.userStore.user?.displayName !== updatedProfile.displayName) {
+                    store.userStore.setDisplayName(updatedProfile.displayName)
+                }
+                this.profile = {...this.profile, ...updatedProfile as Profile};
+                this.loading = false;
+            })
+        } catch (error) {
+            console.log(error);
+            runInAction(() => this.loading = false);
+        }
+    }
+
     uploadPhoto = async (file: Blob) => {
         this.uploading = true;
         try {
@@ -59,7 +76,7 @@ export default class ProfileStore {
     setMainPhoto = async (photo: Photo) => {
         this.loading = true;
         console.log('loading = ' + this.loading);
-        try {
+    try {
             agent.Profiles.setMainPhoto(photo.id);
             store.userStore.setImage(photo.url);
             runInAction(() => {
