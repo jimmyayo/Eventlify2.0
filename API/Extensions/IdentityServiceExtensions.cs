@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using System;
 using System.Text;
 using API.Services;
 using Domain;
@@ -44,7 +46,21 @@ namespace API.Extensions
                             ValidateIssuer = false,
                             ValidateAudience = false
                         };
+                    opt.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context => 
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.Request.Path;
+                            if (!String.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
+                
             services.AddAuthorization(opt => 
             {
                 opt.AddPolicy("IsActivityHost", policy => 
